@@ -3,6 +3,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 public abstract class CommandHandler {
     private interface Command {
@@ -18,7 +19,7 @@ public abstract class CommandHandler {
     CommandHandler() {
         for (Method method : this.getClass().getMethods()) {
             if (method.isAnnotationPresent(TgCommand.class)) {
-                String key = method.getAnnotation(TgCommand.class).name();
+                String key = method.getAnnotation(TgCommand.class).name().toLowerCase();
                 commandMap.put(key, new Command() {
                     @Override
                     public SendMessage doId(Update update) {
@@ -32,7 +33,7 @@ public abstract class CommandHandler {
                 });
             }
             if (method.isAnnotationPresent(TgCallback.class)) {
-                String key = method.getAnnotation(TgCallback.class).name();
+                String key = method.getAnnotation(TgCallback.class).name().toLowerCase();
                 callbackMap.put(key, new Command() {
                     @Override
                     public SendMessage doId(Update update) {
@@ -58,8 +59,9 @@ public abstract class CommandHandler {
             return callbackDefault(update);
         }
 
-        String message = update.getMessage().getText();
-        if (commandMap.containsKey(message.toLowerCase())) {
+        String message = update.getMessage().getText().toLowerCase();
+
+        if (commandMap.containsKey(message)) {
             Command command = commandMap.get(message);
             return command.doId(update);
         } else {

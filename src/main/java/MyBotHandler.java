@@ -13,6 +13,27 @@ public class MyBotHandler extends CommandHandler {
     public MyBotHandler() {
         super();
     }
+
+    public Update convert(Update update) {
+        return new Update(
+                update.getUpdateId(),
+                update.getCallbackQuery().getMessage(),
+                update.getInlineQuery(),
+                update.getChosenInlineQuery(),
+                null,
+                update.getEditedMessage(),
+                update.getChannelPost(),
+                update.getEditedChannelPost(),
+                update.getShippingQuery(),
+                update.getPreCheckoutQuery(),
+                update.getPoll(),
+                update.getPollAnswer(),
+                update.getMyChatMember(),
+                update.getChatMember(),
+                update.getChatJoinRequest()
+        );
+    }
+
     @TgCommand(name = "/start")
     public SendMessage commandStart(Update update) {
         SendMessage sendMessage = new SendMessage();
@@ -24,16 +45,16 @@ public class MyBotHandler extends CommandHandler {
     }
 
     @TgCommand(name = "Создать персонажа")
-    public SendMessage createPers(Update update) {
+    public SendMessage createCratePers(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("выбор рассу");
+        sendMessage.setText("выберите рассу");
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("1");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("2");
-        button1.setCallbackData("1");
-        button2.setCallbackData("2");
+        InlineKeyboardButton button1 = new InlineKeyboardButton("человек");
+        InlineKeyboardButton button2 = new InlineKeyboardButton("эльф");
+        button1.setCallbackData("человек");
+        button2.setCallbackData("эльф");
         rowsInline.add(new ArrayList<>(List.of(
                 button1, button2
         )));
@@ -44,43 +65,47 @@ public class MyBotHandler extends CommandHandler {
     }
 
 
-    @TgCallback(name = "1")
-    public SendMessage commandPers2(Update update) {
-        if (update.hasCallbackQuery()) {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-            String callBackAnswerMessage = update.getCallbackQuery().getData();
-            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-            sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
-            return sendMessage;
-        }
-        return null;
+    @TgCallback(name = "человек")
+    public SendMessage commandPers(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        String callBackAnswerMessage = update.getCallbackQuery().getData();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
+//            BotDB.save(
+//                    update.getCallbackQuery().getMessage().getChatId(),
+//                    "hf",
+//                    callBackAnswerMessage
+//            );
+//            System.out.println(callBackAnswerMessage); vjt
+        return commandCreateClass(convert(update));
     }
 
-    @TgCallback(name = "2")
+    @TgCallback(name = "эльф")
     public SendMessage commandPers1(Update update) {
         if (update.hasCallbackQuery()) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             String callBackAnswerMessage = update.getCallbackQuery().getData();
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-            sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
+            sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
             return sendMessage;
         }
         return null;
     }
 
-    @TgCommand(name = "выберите класс")
-    public SendMessage commandStart1(Update update) {
+
+    @TgCommand(name = "Выберите класс")
+    public SendMessage commandCreateClass(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("выбор класса");
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        InlineKeyboardButton button1 = new InlineKeyboardButton("1");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("2");
-        button1.setCallbackData("1");
-        button2.setCallbackData("2");
+        InlineKeyboardButton button1 = new InlineKeyboardButton("плут");
+        InlineKeyboardButton button2 = new InlineKeyboardButton("маг");
+        button1.setCallbackData("плут");
+        button2.setCallbackData("маг");
         rowsInline.add(new ArrayList<>(List.of(
                 button1, button2
         )));
@@ -90,7 +115,7 @@ public class MyBotHandler extends CommandHandler {
         return sendMessage;
     }
 
-    @TgCallback(name = "1")
+    @TgCallback(name = "плут")
     public SendMessage commandClass(Update update) {
         if (update.hasCallbackQuery()) {
             SendMessage sendMessage = new SendMessage();
@@ -103,7 +128,7 @@ public class MyBotHandler extends CommandHandler {
         return null;
     }
 
-    @TgCallback(name = "2")
+    @TgCallback(name = "маг")
     public SendMessage commandClass1(Update update) {
         if (update.hasCallbackQuery()) {
             SendMessage sendMessage = new SendMessage();
