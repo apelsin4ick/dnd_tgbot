@@ -1,11 +1,10 @@
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,12 +71,19 @@ public class MyBotHandler extends CommandHandler {
         String callBackAnswerMessage = update.getCallbackQuery().getData();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
         sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
+
 //            BotDB.save(
 //                    update.getCallbackQuery().getMessage().getChatId(),
 //                    "hf",
 //                    callBackAnswerMessage
 //            );
 //            System.out.println(callBackAnswerMessage); vjt
+
+        try {
+            MainSQLiteExample.insert(callBackAnswerMessage, "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return commandCreateClass(convert(update));
     }
 
@@ -89,7 +95,13 @@ public class MyBotHandler extends CommandHandler {
             String callBackAnswerMessage = update.getCallbackQuery().getData();
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
-            return sendMessage;
+            try {
+                MainSQLiteExample.insert(callBackAnswerMessage, "");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return commandCreateClass(convert(update));
         }
         return null;
     }
@@ -111,7 +123,6 @@ public class MyBotHandler extends CommandHandler {
         )));
         markupInline.setKeyboard(rowsInline);
         sendMessage.setReplyMarkup(markupInline);
-
         return sendMessage;
     }
 
@@ -123,6 +134,11 @@ public class MyBotHandler extends CommandHandler {
             String callBackAnswerMessage = update.getCallbackQuery().getData();
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
+            try {
+                MainSQLiteExample.insert("", callBackAnswerMessage);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return sendMessage;
         }
         return null;
@@ -136,11 +152,27 @@ public class MyBotHandler extends CommandHandler {
             String callBackAnswerMessage = update.getCallbackQuery().getData();
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
+            try {
+                MainSQLiteExample.insert("", callBackAnswerMessage);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return sendMessage;
         }
         return null;
     }
 
+
+//    public void MainSQLiteExample (Update update) {
+//        try {
+//            if(){
+//
+//            }
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     @Override
     public SendMessage callbackDefault(Update update) {

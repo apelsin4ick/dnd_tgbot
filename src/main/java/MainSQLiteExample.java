@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class MainSQLite {
+public class MainSQLiteExample {
     public static void main(String[] args) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         Statement statement = connection.createStatement();
