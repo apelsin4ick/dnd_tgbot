@@ -47,7 +47,14 @@ public class MyBotHandler extends CommandHandler {
     public SendMessage createCratePers(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("выберите рассу");
+        int id = 0;
+        try {
+            id = MainSQLiteExample.insert(Integer.parseInt(sendMessage.getChatId()), "", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sendMessage.setText("Персонаж #%d#. Выберите рассу".formatted(id));
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton("человек");
@@ -72,15 +79,15 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
         sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
 
-//            BotDB.save(
-//                    update.getCallbackQuery().getMessage().getChatId(),
-//                    "hf",
-//                    callBackAnswerMessage
-//            );
-//            System.out.println(callBackAnswerMessage); vjt
+        String parentMessage = update.getCallbackQuery().getMessage().getText();
+        int hashTagPos = parentMessage.indexOf('#');
+        int hashTagPosLast = parentMessage.lastIndexOf('#');
+        int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
+
+        System.out.println("ерсонаж " + characterId);
 
         try {
-            MainSQLiteExample.insert(callBackAnswerMessage, "");
+            MainSQLiteExample.update(characterId, "races", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -96,7 +103,7 @@ public class MyBotHandler extends CommandHandler {
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
             try {
-                MainSQLiteExample.insert(callBackAnswerMessage, "");
+                MainSQLiteExample.insert(Integer.parseInt(""), callBackAnswerMessage, "");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -135,7 +142,7 @@ public class MyBotHandler extends CommandHandler {
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
             try {
-                MainSQLiteExample.insert("", callBackAnswerMessage);
+                MainSQLiteExample.insert(Integer.parseInt(""), "", callBackAnswerMessage);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -153,7 +160,7 @@ public class MyBotHandler extends CommandHandler {
             sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
             sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
             try {
-                MainSQLiteExample.insert("", callBackAnswerMessage);
+                MainSQLiteExample.insert(Integer.parseInt(""), "", callBackAnswerMessage);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -161,18 +168,6 @@ public class MyBotHandler extends CommandHandler {
         }
         return null;
     }
-
-
-//    public void MainSQLiteExample (Update update) {
-//        try {
-//            if(){
-//
-//            }
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     @Override
     public SendMessage callbackDefault(Update update) {
