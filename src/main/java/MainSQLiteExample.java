@@ -14,16 +14,25 @@ public class MainSQLiteExample {
 //            int id = resultSet.getInt(1);
 //            String classes = resultSet.getString(2);
 //            String races = resultSet.getString(3);
-//
-////            INSERT INTO book(book_id, title, author, price, amount)
-////            VALUES (1, "Мастер и Маргарита", "Булгаков М.А.",670.99,3);
-////            select * from book;
-//
+
+
+////            select * from book where peapleId=id;
+
+
 //            statement.execute("elf");
-//
 //            System.out.println(id + " " + classes + " " + races);
 //        }
 //    }
+
+    public static int select(int peaple, String clazz, String race) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
+        connection.setAutoCommit(true);
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+            select * from book where peapleId=id;
+        """);
+        return peaple;
+    }
+
 
     public static int insert(int peaple, String clazz, String race) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
