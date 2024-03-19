@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MyBotHandler extends CommandHandler {
@@ -196,18 +197,20 @@ public class MyBotHandler extends CommandHandler {
 
 
 
-//    @TgCommand(name = "Мои персонажи")
-//    public void myPers(Update update) {
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(update.getMessage().getChatId());
-//        int id = 0;
-//        try {
-//            id = MainSQLiteExample.select(Integer.parseInt(sendMessage.getChatId()), "", "");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    sendMessage.setText(String.valueOf(id));
-//}
+    @TgCommand(name = "Мои персонажи")
+    public SendMessage myPers(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+        long id = update.getMessage().getChatId();
+        try {
+            ArrayList<Personazhi> personazhisList = MainSQLiteExample.select(id);
+
+            sendMessage.setText(personazhisList.toString().substring(1,personazhisList.toString().length()-2).replace(",", "\n"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sendMessage;
+}
 
 
     @Override

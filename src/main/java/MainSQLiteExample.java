@@ -1,4 +1,8 @@
+import com.sun.source.tree.WhileLoopTree;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainSQLiteExample {
     public static void main(String[] args) throws SQLException {
@@ -24,13 +28,32 @@ public class MainSQLiteExample {
 //        }
 //    }
 
-    public static int select(int peaple, String clazz, String race) throws SQLException {
+    public static ArrayList<Personazhi> select(long telegrammId) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
-            select * from book where peapleId=id;
+            select * from tgdnd where peapleId=?;
         """);
-        return peaple;
+        preparedStatement.setLong(1, telegrammId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        ArrayList<Personazhi> personazhisList=new ArrayList<>();
+        while (resultSet.next()){
+            long id= resultSet.getLong("id");
+            long peapleId= resultSet.getLong("peapleId");
+            String name= resultSet.getString("name");
+            String classes= resultSet.getString("classes");
+            String races= resultSet.getString("races");
+            Long strength= resultSet.getLong("strength");
+            Long dexterity= resultSet.getLong("dexterity");
+            Long endurance= resultSet.getLong("endurance");
+            Long intellect= resultSet.getLong("intellect");
+            Long wisdom= resultSet.getLong("wisdom");
+            Long charisma= resultSet.getLong("charisma");
+
+            personazhisList.add(new Personazhi(id, peapleId,name, classes,races,strength,dexterity, endurance,intellect,wisdom,charisma));
+        }
+        return personazhisList;
     }
 
 
