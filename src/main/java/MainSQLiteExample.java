@@ -9,25 +9,6 @@ public class MainSQLiteExample {
 //        insert();
     }
 
-//    public static void select() throws SQLException {
-//        Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
-//        Statement statement = connection.createStatement();
-//        ResultSet resultSet = statement.executeQuery("SELECT * FROM tgdnd;");
-////        statement.execute("");
-//        while (resultSet.next()) {
-//            int id = resultSet.getInt(1);
-//            String classes = resultSet.getString(2);
-//            String races = resultSet.getString(3);
-
-
-////            select * from book where peapleId=id;
-
-
-//            statement.execute("elf");
-//            System.out.println(id + " " + classes + " " + races);
-//        }
-//    }
-
     public static ArrayList<Personazhi> select(long telegrammId) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
@@ -57,16 +38,17 @@ public class MainSQLiteExample {
     }
 
 
-    public static int insert(int peaple, String clazz, String race) throws SQLException {
+    public static int insert(int peaple, String clazz, String race, int strength) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
-            INSERT INTO tgdnd (peapleId, classes, races)
-            VALUES (?, ?, ?) RETURNING id;
+            INSERT INTO tgdnd (peapleId, classes, races, strength)
+            VALUES (?, ?, ?, ?) RETURNING id;
         """);
         preparedStatement.setString(1, String.valueOf(peaple));
         preparedStatement.setString(2, clazz);
         preparedStatement.setString(3, race);
+        preparedStatement.setString(4, String.valueOf(strength));
         ResultSet resultSet = preparedStatement.executeQuery();
         int id = resultSet.getInt(1);
         connection.close();

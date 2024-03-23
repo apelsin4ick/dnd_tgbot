@@ -49,7 +49,7 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getMessage().getChatId());
         int id = 0;
         try {
-            id = MainSQLiteExample.insert(Integer.parseInt(sendMessage.getChatId()), "", "");
+            id = MainSQLiteExample.insert(Integer.parseInt(sendMessage.getChatId()), "", "", Integer.parseInt(sendMessage.getChatId()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,14 +77,11 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
         String callBackAnswerMessage = update.getCallbackQuery().getData();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
 
         String parentMessage = update.getCallbackQuery().getMessage().getText();
         int hashTagPos = parentMessage.indexOf('#');
         int hashTagPosLast = parentMessage.lastIndexOf('#');
         int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
-
-        System.out.println("персонаж " + characterId);
 
         try {
             MainSQLiteExample.update(characterId, "races", callBackAnswerMessage);
@@ -94,36 +91,31 @@ public class MyBotHandler extends CommandHandler {
         return commandCreateClass(convert(update));
     }
 
-//    @TgCallback(name = "эльф")
-//    public SendMessage commandPers1(Update update) {
-//        if (update.hasCallbackQuery()) {
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-//            String callBackAnswerMessage = update.getCallbackQuery().getData();
-//            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-//            sendMessage.setText("Вы выбрали " + callBackAnswerMessage + "a");
-//            try {
-//                MainSQLiteExample.insert(Integer.parseInt(""), callBackAnswerMessage, "");
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return commandCreateClass(convert(update));
-//        }
-//        return null;
-//    }
+    @TgCallback(name = "эльф")
+    public SendMessage commandPers1(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        String callBackAnswerMessage = update.getCallbackQuery().getData();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+        String parentMessage = update.getCallbackQuery().getMessage().getText();
+        int hashTagPos = parentMessage.indexOf('#');
+        int hashTagPosLast = parentMessage.lastIndexOf('#');
+        int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
+
+        try {
+            MainSQLiteExample.update(characterId, "races", callBackAnswerMessage);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commandCreateClass(convert(update));
+    }
 
 
     @TgCallback(name = "Выберете класс")
     public SendMessage commandCreateClass(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-//        int id = 0;
-//        try {
-//            id = MainSQLiteExample.insert(Integer.parseInt(sendMessage.getChatId()), "", "");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         String parentMessage = update.getMessage().getText();
         int id = getCharacterIdFromMessage(parentMessage);
 
@@ -132,10 +124,12 @@ public class MyBotHandler extends CommandHandler {
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton("плут");
         InlineKeyboardButton button2 = new InlineKeyboardButton("маг");
+        InlineKeyboardButton button3 = new InlineKeyboardButton("варвар");
         button1.setCallbackData("плут");
         button2.setCallbackData("маг");
+        button3.setCallbackData("варвар");
         rowsInline.add(new ArrayList<>(List.of(
-                button1, button2
+                button1, button2, button3
         )));
         markupInline.setKeyboard(rowsInline);
         sendMessage.setReplyMarkup(markupInline);
@@ -143,7 +137,7 @@ public class MyBotHandler extends CommandHandler {
         return sendMessage;
     }
 
-    protected int getCharacterIdFromMessage(String message){
+    protected int getCharacterIdFromMessage(String message) {
         int hashTagPos = message.indexOf('#');
         int hashTagPosLast = message.lastIndexOf('#');
         return Integer.parseInt(message.substring(hashTagPos + 1, hashTagPosLast));
@@ -156,7 +150,6 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
         String callBackAnswerMessage = update.getCallbackQuery().getData();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
 
         String parentMessage = update.getCallbackQuery().getMessage().getText();
 
@@ -165,36 +158,65 @@ public class MyBotHandler extends CommandHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return commandCreateClass(convert(update));
+        return commandClass1(update);
     }
-//            try {
-//                MainSQLiteExample.insert(Integer.parseInt(""), "", callBackAnswerMessage);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//            return sendMessage;
-//        }
-//        return null;
-//    }
 
-//    @TgCallback(name = "маг")
-//    public SendMessage commandClass1(Update update) {
-//        if (update.hasCallbackQuery()) {
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-//            String callBackAnswerMessage = update.getCallbackQuery().getData();
-//            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-//            sendMessage.setText("Вы выбрали " + callBackAnswerMessage);
-//            try {
-//                MainSQLiteExample.insert(Integer.parseInt(""), "", callBackAnswerMessage);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//            return sendMessage;
-//        }
-//        return null;
-//    }
+    @TgCallback(name = "маг")
+    public SendMessage commandClass1(Update update) {
 
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        String callBackAnswerMessage = update.getCallbackQuery().getData();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+        String parentMessage = update.getCallbackQuery().getMessage().getText();
+
+        try {
+            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commandClass1(convert(update));
+    }
+
+    @TgCallback(name = "варвар")
+    public SendMessage commandClass2(Update update) {
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        String callBackAnswerMessage = update.getCallbackQuery().getData();
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+        String parentMessage = update.getCallbackQuery().getMessage().getText();
+
+        try {
+            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commandClass2(convert(update));
+    }
+
+//    @TgCommand(name = "strength")
+//    public SendMessage commandStrength(Update update) {
+//        SendMessage sendMessage = new SendMessage();
+//        sendMessage.setChatId(update.getMessage().getChatId());
+//        String parentMessage = update.getMessage().getText();
+//        int id = getCharacterIdFromMessage(parentMessage);
+//
+//        sendMessage.setText("Персонаж #%d#. Напишите количество силы" +  "\n" + "/strength".formatted(id));
+//        if (update.hasMessage() && update.getMessage().hasText()) {
+//            sendMessage.setChatId(update.getMessage().getText());
+//            long strength = update.getMessage().getChatId();
+//            String.valueOf(strength);
+//        }
+//        try {
+//            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "strength", );
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return commandStrength(update);
+//    }
 
 
     @TgCommand(name = "Мои персонажи")
@@ -220,12 +242,23 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setText("error");
         return sendMessage;
     }
-
     @Override
     public SendMessage commandDefault(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("error");
+
+        String[] data = update.getMessage().getText().split(" ");
+        if (data[0].equals("/strength") && data.length == 2){
+            try {
+                int strength = Integer.parseInt(data[1]);
+                sendMessage.setText("Сила " + strength);
+            } catch (Exception e){
+                sendMessage.setText("Не чиселка!!!!!!");
+            }
+
+        } else {
+            sendMessage.setText("error");
+        }
         return sendMessage;
     }
 }
