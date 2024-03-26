@@ -13,12 +13,14 @@ public class MainKeyboard extends ReplyKeyboardMarkup {
     public MainKeyboard() {
         KeyboardButton button1 = new KeyboardButton("Создать персонажа");
         KeyboardButton button2 = new KeyboardButton("Мои персонажи");
-        KeyboardButton button3 = new KeyboardButton("Настройки");
+        KeyboardButton button3 = new KeyboardButton("Подробнее");
+        KeyboardButton button4 = new KeyboardButton("Настройки");
 
         KeyboardRow row1 = new KeyboardRow(List.of(button1));
         KeyboardRow row2 = new KeyboardRow(List.of(button2));
         KeyboardRow row3 = new KeyboardRow(List.of(button3));
-        this.setKeyboard(new ArrayList<>(List.of(row1, row2, row3)));
+        KeyboardRow row4 = new KeyboardRow(List.of(button4));
+        this.setKeyboard(new ArrayList<>(List.of(row1, row2, row3, row4)));
     }
 }
 

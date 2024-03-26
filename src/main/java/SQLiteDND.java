@@ -4,9 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainSQLiteExample {
+public class SQLiteDND {
     public static void main(String[] args) throws SQLException {
-//        insert();
     }
 
     public static ArrayList<Personazhi> select(long telegrammId) throws SQLException {

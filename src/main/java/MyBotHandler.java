@@ -5,7 +5,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MyBotHandler extends CommandHandler {
@@ -49,7 +48,7 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getMessage().getChatId());
         int id = 0;
         try {
-            id = MainSQLiteExample.insert(Integer.parseInt(sendMessage.getChatId()), "", "", Integer.parseInt(sendMessage.getChatId()));
+            id = SQLiteDND.insert(Integer.parseInt(sendMessage.getChatId()), "", "", Integer.parseInt(sendMessage.getChatId()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,7 +83,7 @@ public class MyBotHandler extends CommandHandler {
         int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
 
         try {
-            MainSQLiteExample.update(characterId, "races", callBackAnswerMessage);
+            SQLiteDND.update(characterId, "races", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,7 +103,7 @@ public class MyBotHandler extends CommandHandler {
         int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
 
         try {
-            MainSQLiteExample.update(characterId, "races", callBackAnswerMessage);
+            SQLiteDND.update(characterId, "races", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -154,7 +153,7 @@ public class MyBotHandler extends CommandHandler {
         String parentMessage = update.getCallbackQuery().getMessage().getText();
 
         try {
-            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
+            SQLiteDND.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -172,10 +171,11 @@ public class MyBotHandler extends CommandHandler {
         String parentMessage = update.getCallbackQuery().getMessage().getText();
 
         try {
-            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
+            SQLiteDND.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return commandClass1(convert(update));
     }
 
@@ -190,34 +190,31 @@ public class MyBotHandler extends CommandHandler {
         String parentMessage = update.getCallbackQuery().getMessage().getText();
 
         try {
-            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
+            SQLiteDND.update(getCharacterIdFromMessage(parentMessage), "classes", callBackAnswerMessage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return commandClass2(convert(update));
+        return streinght(convert(update));
     }
 
-//    @TgCommand(name = "strength")
-//    public SendMessage commandStrength(Update update) {
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(update.getMessage().getChatId());
-//        String parentMessage = update.getMessage().getText();
-//        int id = getCharacterIdFromMessage(parentMessage);
-//
-//        sendMessage.setText("Персонаж #%d#. Напишите количество силы" +  "\n" + "/strength".formatted(id));
-//        if (update.hasMessage() && update.getMessage().hasText()) {
-//            sendMessage.setChatId(update.getMessage().getText());
-//            long strength = update.getMessage().getChatId();
-//            String.valueOf(strength);
-//        }
-//        try {
-//            MainSQLiteExample.update(getCharacterIdFromMessage(parentMessage), "strength", );
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return commandStrength(update);
-//    }
+    @TgCommand(name = "Сила")
+    public SendMessage streinght(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+        String parentMessage = update.getMessage().getText();
+        int id = getCharacterIdFromMessage(parentMessage);
 
+        long tg = update.getMessage().getChatId();
+        long state = UserState.STREINGHT;
+        try {
+            SQLiteUser.insert(tg, state);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sendMessage.setText("Персонаж #%d#. Впишите количество силы:".formatted(id));
+        return sendMessage;
+    }
 
     @TgCommand(name = "Мои персонажи")
     public SendMessage myPers(Update update) {
@@ -225,14 +222,14 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getMessage().getChatId());
         long id = update.getMessage().getChatId();
         try {
-            ArrayList<Personazhi> personazhisList = MainSQLiteExample.select(id);
+            ArrayList<Personazhi> personazhisList = SQLiteDND.select(id);
 
-            sendMessage.setText(personazhisList.toString().substring(1,personazhisList.toString().length()-2).replace(",", "\n"));
+            sendMessage.setText(personazhisList.toString().substring(1, personazhisList.toString().length() - 2).replace(",", "\n"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return sendMessage;
-}
+    }
 
 
     @Override
@@ -242,22 +239,28 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setText("error");
         return sendMessage;
     }
+
     @Override
     public SendMessage commandDefault(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
 
-        String[] data = update.getMessage().getText().split(" ");
-        if (data[0].equals("/strength") && data.length == 2){
-            try {
-                int strength = Integer.parseInt(data[1]);
-                sendMessage.setText("Сила " + strength);
-            } catch (Exception e){
-                sendMessage.setText("Не чиселка!!!!!!");
-            }
+        String data = update.getMessage().getText();
 
-        } else {
-            sendMessage.setText("error");
+        long tg = update.getMessage().getChatId();
+
+        try {
+            ArrayList<User> users = SQLiteUser.select(tg);
+            if (!users.isEmpty()) {
+                User user = users.get(0);
+                if (user.state == UserState.STREINGHT) {
+
+                } else {
+                    sendMessage.setText("error");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return sendMessage;
     }
