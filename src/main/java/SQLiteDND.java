@@ -37,7 +37,7 @@ public class SQLiteDND {
     }
 
 
-    public static int insert(int peaple, String clazz, String race, int strength) throws SQLException {
+    public static int insert(long peaple, String clazz, String race, int strength) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
@@ -54,7 +54,7 @@ public class SQLiteDND {
         return id;
     }
 
-    public static int update(int id, String columnName, String value) throws SQLException {
+    public static int update(long id, String columnName, String value) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
@@ -64,11 +64,26 @@ public class SQLiteDND {
             RETURNING id;
         """.formatted(columnName));
         preparedStatement.setString(1, value);
-        preparedStatement.setInt(2, id);
+        preparedStatement.setLong(2, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         int _id = resultSet.getInt(1);
         connection.close();
         return _id;
 
+    }
+    public static int updatePers(long peaple) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
+        connection.setAutoCommit(true);
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                    UPDATE tgdnd SET
+                    pers = ?
+                    where id=?
+                    RETURNING id;
+                """);
+        preparedStatement.setString(1, String.valueOf(peaple));
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int _id = resultSet.getInt(1);
+        connection.close();
+        return _id;
     }
 }

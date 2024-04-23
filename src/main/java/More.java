@@ -8,18 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class More {
-    @TgCommand(name = "Поробнее")
+    @TgCommand(name = "Подробнее")
     public SendMessage more(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        int id = 0;
-        try {
-            id = SQLiteDND.insert(Integer.parseInt(sendMessage.getChatId()), "", "", Integer.parseInt(sendMessage.getChatId()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        sendMessage.setText("Подрбнее о: ".formatted(id));
+        sendMessage.setText("Подрбнее о: ");
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         InlineKeyboardButton button1 = new InlineKeyboardButton("классы");
@@ -35,22 +29,12 @@ public class More {
         return sendMessage;
     }
     @TgCallback(name = "классы")
-    public SendMessage commandPers(Update update) {
+    public SendMessage callBackClass(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
         String callBackAnswerMessage = update.getCallbackQuery().getData();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
-        String parentMessage = update.getCallbackQuery().getMessage().getText();
-        int hashTagPos = parentMessage.indexOf('#');
-        int hashTagPosLast = parentMessage.lastIndexOf('#');
-        int characterId = Integer.parseInt(parentMessage.substring(hashTagPos + 1, hashTagPosLast));
-
-        try {
-            SQLiteDND.update(characterId, "races", callBackAnswerMessage);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return moreClass(update);
     }
 
@@ -58,7 +42,6 @@ public class More {
     public SendMessage moreClass(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        String parentMessage = update.getMessage().getText();
 
         sendMessage.setText("Выберите класс");
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
@@ -74,7 +57,15 @@ public class More {
         )));
         markupInline.setKeyboard(rowsInline);
         sendMessage.setReplyMarkup(markupInline);
-
         return sendMessage;
+    }
+        @TgCallback(name = "плут")
+        public SendMessage callBackPlut(Update update){
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+            String callBackAnswerMessage = update.getCallbackQuery().getData();
+            sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+            return moreClass(update);
     }
 }

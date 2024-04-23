@@ -6,7 +6,7 @@ public class SQLiteUser {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
-            select * from userState where =?;
+            select * from userState where tgId=?;
         """);
         preparedStatement.setLong(1, telegrammId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -15,38 +15,42 @@ public class SQLiteUser {
         while (resultSet.next()){
             long id= resultSet.getLong("tgId");
             long state= resultSet.getLong("state");
+            long persNum= resultSet.getLong("persNum");
 
-            users.add(new User(id, state));
+            users.add(new User(id, state, persNum));
         }
         return users;
     }
 
-    public static int insert(long tg, long state) throws SQLException {
+    public static int insert(long tgId, long state, long persNum) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
-            INSERT INTO user (tg, state)
-            VALUES (?, ?) RETURNING id;
+            INSERT INTO userState (tgId, state, persNum)
+            VALUES (?, ?, ?) RETURNING id;
         """);
-        preparedStatement.setString(1, String.valueOf(tg));
+        preparedStatement.setString(1, String.valueOf(tgId));
         preparedStatement.setString(2, String.valueOf(state));
+        preparedStatement.setString(3, String.valueOf(persNum));
         ResultSet resultSet = preparedStatement.executeQuery();
         int id = resultSet.getInt(1);
         connection.close();
         return id;
     }
 
-    public static int update(int id, String columnName, String value) throws SQLException {
+    public static int update(long tgId, long state, long persNum) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
                     UPDATE userState SET
-                    %s = ?
-                    where id=?
-                    RETURNING id;
-                """.formatted(columnName));
-        preparedStatement.setString(1, value);
-        preparedStatement.setInt(2, id);
+                    state = ?,
+                    persNum = ?
+                    where tgId=?
+                    RETURNING tgId;
+                """);
+        preparedStatement.setLong(1, state);
+        preparedStatement.setLong(2, persNum);
+        preparedStatement.setLong(3, tgId);
         ResultSet resultSet = preparedStatement.executeQuery();
         int _id = resultSet.getInt(1);
         connection.close();
