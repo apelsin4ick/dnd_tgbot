@@ -1,6 +1,5 @@
 public class Personazhi {
     Long id;
-    Long peapleId;
     String name;
     String classes;
     String races;
@@ -13,7 +12,6 @@ public class Personazhi {
 
     public Personazhi(Long id, Long peapleId, String name, String classes, String races, Long strength, Long dexterity, Long endurance, Long intellect, Long wisdom, Long charisma) {
         this.id = id;
-        this.peapleId = peapleId;
         this.name = name;
         this.classes = classes;
         this.races = races;
@@ -28,7 +26,6 @@ public class Personazhi {
     @Override
     public String toString() {
         return "персонаж: " + id + "\n" +
-                " peapleId=" + peapleId + "\n" +
                 " имя=" + name  + "\n" +
                 " класс=" + classes  + "\n" +
                 " рассы=" + races  + "\n" +

@@ -39,6 +39,7 @@ public class SQLiteUser {
     }
 
     public static int update(long tgId, long state, long persNum) throws SQLException {
+        System.out.println("update " + tgId + " " + state + " " + persNum);
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
@@ -53,6 +54,7 @@ public class SQLiteUser {
         preparedStatement.setLong(3, tgId);
         ResultSet resultSet = preparedStatement.executeQuery();
         int _id = resultSet.getInt(1);
+
         connection.close();
         return _id;
     }

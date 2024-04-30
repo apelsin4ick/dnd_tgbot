@@ -6,6 +6,6 @@ public class User{
     public User(long tgId, long state, long persNum) {
         this.tgId = tgId;
         this.state = state;
-        this.persNum= this.persNum;
+        this.persNum= persNum;
     }
 }
