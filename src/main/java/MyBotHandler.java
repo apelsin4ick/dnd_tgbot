@@ -38,7 +38,6 @@ public class MyBotHandler extends CommandHandler {
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("тгбдндсп");
         sendMessage.setReplyMarkup(new MainKeyboard());
-
         return sendMessage;
     }
 
@@ -52,7 +51,7 @@ public class MyBotHandler extends CommandHandler {
             ArrayList<User> users = SQLiteUser.select(tgId);
             if (!users.isEmpty()) {
                 User user = users.get(0);
-                int id = SQLiteDND.insert(user.tgId, "", "", 0,0,0,0,0,0);
+                int id = SQLiteDND.insert(user.tgId, "", "", 0,0,0,0,0,0,"");
                 sendMessage.setText("Персонаж #%d#. Выберите рассу".formatted(id));
                 SQLiteUser.update(tgId, UserState.RACES, user.persNum);
                 InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
@@ -68,6 +67,25 @@ public class MyBotHandler extends CommandHandler {
                 sendMessage.setReplyMarkup(markupInline);
 
                 SQLiteUser.update(user.tgId, UserState.RACES, id);
+            } else {
+                int persId = SQLiteDND.insert(tgId, "", "", 0,0,0,0,0,0,"");
+                SQLiteUser.insert(tgId, UserState.RACES, persId);
+
+                sendMessage.setText("Персонаж #%d#. Выберите рассу".formatted(persId));
+                SQLiteUser.update(tgId, UserState.RACES, persId);
+                InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+                List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+                InlineKeyboardButton button1 = new InlineKeyboardButton("человек");
+                InlineKeyboardButton button2 = new InlineKeyboardButton("эльф");
+                button1.setCallbackData("человек");
+                button2.setCallbackData("эльф");
+                rowsInline.add(new ArrayList<>(List.of(
+                        button1, button2
+                )));
+                markupInline.setKeyboard(rowsInline);
+                sendMessage.setReplyMarkup(markupInline);
+
+                SQLiteUser.update(tgId, UserState.RACES, persId);
             }
 
         } catch (SQLException e) {
@@ -319,6 +337,24 @@ public class MyBotHandler extends CommandHandler {
         }
         return sendMessage;
     }
+    @TgCommand(name = "Имя")
+    public SendMessage name(Update update) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+
+        try {
+            long tgId = update.getMessage().getChatId();
+            ArrayList<User> users = SQLiteUser.select(tgId);
+            if (!users.isEmpty()) {
+                User user = users.get(0);
+                SQLiteUser.update(tgId, UserState.DEFAULT, user.persNum);
+                sendMessage.setText("Персонаж #%d#. Впишите имя".formatted(user.persNum));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sendMessage;
+    }
 
     protected boolean isNumber(String s){
         int cnt = 0;
@@ -329,7 +365,6 @@ public class MyBotHandler extends CommandHandler {
         }
         return cnt == s.length();
     }
-
 
     @Override
     public SendMessage commandDefault(Update update) {
@@ -372,6 +407,14 @@ public class MyBotHandler extends CommandHandler {
                                     if (user.state == UserState.CHARISMA) {
                                         SQLiteDND.update(user.persNum, "charisma", update.getMessage().getText());
                                         SQLiteUser.update(tgId, UserState.CHARISMA, user.persNum);
+                                        return name(update);
+                                        }else{
+                                            if(user.state == UserState.DEFAULT){
+                                                SQLiteDND.update(user.persNum, "name", update.getMessage().getText());
+                                                SQLiteUser.update(tgId, UserState.DEFAULT, user.persNum);
+                                                sendMessage.setText("конец");
+                                                return sendMessage;
+                                            }
                                     }
                                 }
                             }

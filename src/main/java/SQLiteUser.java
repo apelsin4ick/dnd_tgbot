@@ -27,7 +27,7 @@ public class SQLiteUser {
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
             INSERT INTO userState (tgId, state, persNum)
-            VALUES (?, ?, ?) RETURNING id;
+            VALUES (?, ?, ?) RETURNING tgId;
         """);
         preparedStatement.setString(1, String.valueOf(tgId));
         preparedStatement.setString(2, String.valueOf(state));
