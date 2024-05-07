@@ -377,6 +377,11 @@ public class MyBotHandler extends CommandHandler {
             ArrayList<User> users = SQLiteUser.select(tgId);
             User user = users.get(0);
             String userMessage = update.getMessage().getText();
+            if(user.state == UserState.DEFAULT){
+                SQLiteDND.update(user.persNum, "name", update.getMessage().getText());
+                SQLiteUser.update(tgId, UserState.DEFAULT, user.persNum);
+                sendMessage.setText("конец");
+                return sendMessage;}
 
             if (user.state == UserState.STREINGHT) {
                 SQLiteDND.update(user.persNum, "strength", update.getMessage().getText());
@@ -408,13 +413,7 @@ public class MyBotHandler extends CommandHandler {
                                         SQLiteDND.update(user.persNum, "charisma", update.getMessage().getText());
                                         SQLiteUser.update(tgId, UserState.CHARISMA, user.persNum);
                                         return name(update);
-                                        }else{
-                                            if(user.state == UserState.DEFAULT){
-                                                SQLiteDND.update(user.persNum, "name", update.getMessage().getText());
-                                                SQLiteUser.update(tgId, UserState.DEFAULT, user.persNum);
-                                                sendMessage.setText("конец");
-                                                return sendMessage;
-                                            }
+
                                     }
                                 }
                             }

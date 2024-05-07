@@ -37,12 +37,12 @@ public class SQLiteDND {
     }
 
 
-    public static int insert(long peaple, String clazz, String race, int strength,int dexterity, int endurance,int intellect,int wisdom,int charisma,String name) throws SQLException {
+    public static int insert(long peaple, String clazz, String race, int strength,int dexterity, int endurance,int intellect,int wisdom,int charisma, String name) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:src/resources/db/db.sqlite");
         connection.setAutoCommit(true);
         PreparedStatement preparedStatement = connection.prepareStatement("""
             INSERT INTO tgdnd (peapleId, classes, races, strength, dexterity, endurance, intellect, wisdom, charisma, name)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;
         """);
         preparedStatement.setString(1, String.valueOf(peaple));
         preparedStatement.setString(2, clazz);
